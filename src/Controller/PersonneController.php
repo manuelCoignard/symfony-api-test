@@ -26,14 +26,22 @@ class PersonneController extends AbstractController
     public function personneAdd(EntityManagerInterface $em, Request $request): Response
     {
         $data = json_decode($request->getContent());
-        $newPersonne = new Personne;
-        $newPersonne->setNom($data->nom);
-        $newPersonne->setPrenom($data->prenom);
+        
+        /* Code d'origine
+        $personne = new Personne;
+        $personne->setNom($data->nom);
+        $personne->setPrenom($data->prenom);
 
-        $em->persist($newPersonne);
+        $em->persist($personne);
+        $em->flush();
+        */
+
+        //factorisation
+        $em->persist((new Personne)->setNom($data->nom)->setPrenom($data->prenom));
         $em->flush();
 
-        return $this->json($newPersonne);
+        //Redirection vers la méthode GET pour l'affichage des données dans la bdd
+        return $this->redirectToRoute('personne_select');
     }
 
     /**
